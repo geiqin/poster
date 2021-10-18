@@ -42,7 +42,7 @@ func (h *ImageRemoteHandler) Do(c *Context) (err error) {
 		Y: h.Y,
 	}
 	if h.Weight > 0 && h.Height > 0 {
-		imaging.Resize(srcImage, h.Weight, h.Height, imaging.Lanczos)
+		srcImage = imaging.Resize(srcImage, h.Weight, h.Height, imaging.Lanczos)
 	}
 
 	core.MergeImage(c.PngCarrier, srcImage, srcImage.Bounds().Min.Sub(srcPoint))
