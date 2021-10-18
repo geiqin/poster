@@ -10,6 +10,7 @@ package handler
 
 import (
 	"fmt"
+	"github.com/disintegration/imaging"
 	"github.com/geiqin/poster/circlemask"
 	"github.com/geiqin/poster/core"
 	"image"
@@ -19,9 +20,11 @@ import (
 type ImageCircleRemoteHandler struct {
 	// 合成复用Next
 	Next
-	X   int
-	Y   int
-	URL string //http://xxx.png
+	X      int
+	Y      int
+	Weight int
+	Height int
+	URL    string //http://xxx.png
 }
 
 // Do 地址逻辑
@@ -35,18 +38,23 @@ func (h *ImageCircleRemoteHandler) Do(c *Context) (err error) {
 	if err != nil {
 		fmt.Errorf("SetRemoteImage image.Decode err：%v", err)
 	}
+
+	if h.Weight > 0 && h.Height > 0 {
+		srcImage = imaging.Resize(srcImage, h.Weight, h.Height, imaging.Lanczos)
+	}
+
 	// 算出图片的宽度和高试
 	width := srcImage.Bounds().Max.X - srcImage.Bounds().Min.X
-	hight := srcImage.Bounds().Max.Y - srcImage.Bounds().Min.Y
+	height := srcImage.Bounds().Max.Y - srcImage.Bounds().Min.Y
 
 	//把头像转成Png,否则会有白底
-	srcPng := core.NewPNG(0, 0, width, hight)
+	srcPng := core.NewPNG(0, 0, width, height)
 	core.MergeImage(srcPng, srcImage, srcImage.Bounds().Min)
 
 	// 圆的直径以长边为准
 	diameter := width
-	if width > hight {
-		diameter = hight
+	if width > height {
+		diameter = height
 	}
 	// 遮罩
 	srcMask := circlemask.NewCircleMask(srcPng, image.Point{0, 0}, diameter)
