@@ -21,7 +21,9 @@
   <component name="ChangeListManager">
     <list default="true" id="b4700cfa-10c6-4ab4-8021-ba221450d723" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handler/qrcode_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/handler/qrcode_handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handler/image_remote_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/handler/image_remote_handler.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

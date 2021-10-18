@@ -10,6 +10,7 @@ package handler
 
 import (
 	"fmt"
+	"github.com/disintegration/imaging"
 	"github.com/geiqin/poster/core"
 	"image"
 )
@@ -18,9 +19,11 @@ import (
 type ImageRemoteHandler struct {
 	// 合成复用Next
 	Next
-	X   int
-	Y   int
-	URL string //http://xxx.png
+	X      int
+	Y      int
+	Weight int
+	Height int
+	URL    string //http://xxx.png
 }
 
 // Do 地址逻辑
@@ -38,6 +41,10 @@ func (h *ImageRemoteHandler) Do(c *Context) (err error) {
 		X: h.X,
 		Y: h.Y,
 	}
+	if h.Weight > 0 && h.Height > 0 {
+		imaging.Resize(srcImage, h.Weight, h.Height, imaging.Lanczos)
+	}
+
 	core.MergeImage(c.PngCarrier, srcImage, srcImage.Bounds().Min.Sub(srcPoint))
 	return
 }
