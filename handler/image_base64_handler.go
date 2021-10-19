@@ -26,31 +26,18 @@ type ImageBase64Handler struct {
 	Weight  int
 	Height  int
 	Content string //Base64
-	//	IsJpeg  bool
 }
 
 // Do 地址逻辑
 func (h *ImageBase64Handler) Do(c *Context) (err error) {
-	//var srcImage image.Image
-	//var imgErr error
 	imgData, err := base64.StdEncoding.DecodeString(h.Content) //成图片文件并把文件写入到buffer
 	if err != nil {
 		fmt.Errorf("ImageBase64 image.Decode err：%v", err)
 		return
 	}
 
-	bbb := bytes.NewBuffer(imgData)
-
-	srcImage, _, srcErr := image.Decode(bbb)
-
-	/*
-		if h.IsJpeg {
-			srcImage, imgErr = jpeg.Decode(bbb)
-		} else {
-			srcImage, imgErr = png.Decode(bbb)
-		}
-
-	*/
+	buf := bytes.NewBuffer(imgData)
+	srcImage, _, srcErr := image.Decode(buf)
 
 	if srcErr != nil {
 		fmt.Errorf("img.Decode err：%v", srcErr)

@@ -26,9 +26,6 @@ func (h *Reader) GetRemoteImage(url string) (image.Image, error) {
 }
 
 func (h *Reader) GetLocalImage(path string) (image.Image, error) {
-	//var srcImage image.Image
-	//var srcErr error
-
 	//获取背景 必须是PNG图
 	imageFile, err := os.Open(path)
 

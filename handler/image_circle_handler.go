@@ -10,45 +10,55 @@ package handler
 
 import (
 	"fmt"
+	"github.com/disintegration/imaging"
 	"github.com/geiqin/poster/circlemask"
 	"github.com/geiqin/poster/core"
 	"image"
-	"os"
 )
-// ImageCircleLocalHandler 根据Path路径设置圆形图片
-type ImageCircleLocalHandler struct {
+
+// ImageCircleHandler 根据URL地址设置圆形图片
+type ImageCircleHandler struct {
 	// 合成复用Next
 	Next
-	X   int
-	Y   int
-	Path string //./images/xx.png
+	Reader
+	X      int
+	Y      int
+	Weight int
+	Height int
+	Path   string //本地路径
+	URL    string //网络地址 http://
 }
 
 // Do 地址逻辑
-func (h *ImageCircleLocalHandler) Do(c *Context) (err error) {
+func (h *ImageCircleHandler) Do(c *Context) (err error) {
+	var srcImage image.Image
 
-	imageFile, err := os.Open(h.Path)
+	if h.Path != "" {
+		srcImage, err = h.GetLocalImage(h.Path)
+	} else if h.URL != "" {
+		srcImage, err = h.GetRemoteImage(h.URL)
+	}
 	if err != nil {
-		fmt.Errorf("os.Open err：%v", err)
+		fmt.Errorf("core.GetResourceReader err：%v", err)
+		return err
 	}
 
-	srcImage,_,err := image.Decode(imageFile)
-
-	if err != nil {
-		fmt.Errorf("SetRemoteImage image.Decode err：%v", err)
+	if h.Weight > 0 && h.Height > 0 {
+		srcImage = imaging.Resize(srcImage, h.Weight, h.Height, imaging.Lanczos)
 	}
+
 	// 算出图片的宽度和高试
 	width := srcImage.Bounds().Max.X - srcImage.Bounds().Min.X
-	hight := srcImage.Bounds().Max.Y - srcImage.Bounds().Min.Y
+	height := srcImage.Bounds().Max.Y - srcImage.Bounds().Min.Y
 
 	//把头像转成Png,否则会有白底
-	srcPng := core.NewPNG(0, 0, width, hight)
+	srcPng := core.NewPNG(0, 0, width, height)
 	core.MergeImage(srcPng, srcImage, srcImage.Bounds().Min)
 
 	// 圆的直径以长边为准
 	diameter := width
-	if width > hight {
-		diameter = hight
+	if width > height {
+		diameter = height
 	}
 	// 遮罩
 	srcMask := circlemask.NewCircleMask(srcPng, image.Point{0, 0}, diameter)
@@ -57,6 +67,7 @@ func (h *ImageCircleLocalHandler) Do(c *Context) (err error) {
 		X: h.X,
 		Y: h.Y,
 	}
+
 	core.MergeImage(c.PngCarrier, srcMask, srcImage.Bounds().Min.Sub(srcPoint))
 	return
 }
