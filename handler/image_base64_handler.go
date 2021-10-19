@@ -34,14 +34,14 @@ func (h *ImageBase64Handler) Do(c *Context) (err error) {
 	imgData, err := base64.StdEncoding.DecodeString(h.Content) //成图片文件并把文件写入到buffer
 	if err != nil {
 		fmt.Errorf("ImageBase64 image.Decode err：%v", err)
-		return err
+		return
 	}
 
 	bbb := bytes.NewBuffer(imgData)
 	srcImage, err := png.Decode(bbb)
 	if err != nil {
 		fmt.Errorf("png.Decode err：%v", err)
-		return err
+		return
 	}
 	srcPoint := image.Point{
 		X: h.X,
