@@ -26,7 +26,7 @@ type ImageBase64Handler struct {
 	Weight  int
 	Height  int
 	Content string //Base64
-	IsJpeg  bool
+	//	IsJpeg  bool
 }
 
 // Do 地址逻辑
