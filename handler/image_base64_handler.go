@@ -39,7 +39,10 @@ func (h *ImageBase64Handler) Do(c *Context) (err error) {
 
 	bbb := bytes.NewBuffer(imgData)
 	srcImage, err := png.Decode(bbb)
-
+	if err != nil {
+		fmt.Errorf("png.Decode err：%v", err)
+		return err
+	}
 	srcPoint := image.Point{
 		X: h.X,
 		Y: h.Y,
