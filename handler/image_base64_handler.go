@@ -15,8 +15,6 @@ import (
 	"github.com/disintegration/imaging"
 	"github.com/geiqin/poster/core"
 	"image"
-	"image/jpeg"
-	"image/png"
 )
 
 // ImageBase64Handler 根据Base64设置图片
@@ -33,8 +31,8 @@ type ImageBase64Handler struct {
 
 // Do 地址逻辑
 func (h *ImageBase64Handler) Do(c *Context) (err error) {
-	var srcImage image.Image
-	var imgErr error
+	//var srcImage image.Image
+	//var imgErr error
 	imgData, err := base64.StdEncoding.DecodeString(h.Content) //成图片文件并把文件写入到buffer
 	if err != nil {
 		fmt.Errorf("ImageBase64 image.Decode err：%v", err)
@@ -42,14 +40,20 @@ func (h *ImageBase64Handler) Do(c *Context) (err error) {
 	}
 
 	bbb := bytes.NewBuffer(imgData)
-	if h.IsJpeg {
-		srcImage, imgErr = jpeg.Decode(bbb)
-	} else {
-		srcImage, imgErr = png.Decode(bbb)
-	}
 
-	if imgErr != nil {
-		fmt.Errorf("img.Decode err：%v", imgErr)
+	srcImage, _, srcErr := image.Decode(bbb)
+
+	/*
+		if h.IsJpeg {
+			srcImage, imgErr = jpeg.Decode(bbb)
+		} else {
+			srcImage, imgErr = png.Decode(bbb)
+		}
+
+	*/
+
+	if srcErr != nil {
+		fmt.Errorf("img.Decode err：%v", srcErr)
 		return
 	}
 	srcPoint := image.Point{
